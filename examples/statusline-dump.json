@@ -1,0 +1,9 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "claude-planline dump",
+    "refreshInterval": 60,
+    "padding": 1
+  }
+}
+

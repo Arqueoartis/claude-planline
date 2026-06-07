@@ -1,0 +1,9 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "claude-planline --lang es --style cute",
+    "refreshInterval": 60,
+    "padding": 1
+  }
+}
+

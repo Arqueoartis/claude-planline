@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-planline"
+version = "0.1.0"
+description = "Tiny cute Claude Code statusLine helper for 5h plan usage and monthly usage credits."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "claude-planline contributors" }
+]
+keywords = ["claude", "claude-code", "statusline", "usage", "terminal"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Utilities"
+]
+
+[project.scripts]
+claude-planline = "claude_planline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
