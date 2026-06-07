@@ -28,18 +28,101 @@ Sin cookies. Sin login. Sin endpoints privados. Sin telemetria.
 
 `claude-planline` solo lee el JSON que Claude Code entrega al comando oficial `statusLine`.
 
-## Install
+## Quick Install
 
-### Option A: run from a cloned repo, no package install
+### English
+
+```bash
+git clone https://github.com/Arqueoartis/claude-planline
+cd claude-planline
+chmod +x bin/claude-planline
+./bin/claude-planline preview --lang en --style cute
+./bin/claude-planline install --lang en --style cute --layout two-line
+```
+
+Restart Claude Code. If you already had a custom statusLine, `claude-planline` keeps it and adds the plan meter underneath.
+
+### Español
 
 ```bash
 git clone https://github.com/Arqueoartis/claude-planline
 cd claude-planline
 chmod +x bin/claude-planline
 ./bin/claude-planline preview --lang es --style cute
+./bin/claude-planline install --lang es --style cute --layout two-line
 ```
 
-Then use the absolute path in Claude Code:
+Reinicia Claude Code. Si ya tenias una statusLine propia, `claude-planline` la conserva y añade el medidor del plan debajo.
+
+Example two-line result:
+
+```text
+Opus 4.8 │ ~/project │ █████████░ 97% left (26.8k/1.0M)
+(•‿•) 5h [█░░░░░░░░░] 9% used · left 91% · reset 02:10
+```
+
+Ejemplo en dos lineas:
+
+```text
+Opus 4.8 │ ~/proyecto │ █████████░ 97% queda (26.8k/1.0M)
+(•‿•) 5h [█░░░░░░░░░] 9% usado · queda 91% · reset 02:10
+```
+
+## Install Modes
+
+### Preserve an existing statusLine
+
+This is the default and safest mode:
+
+```bash
+./bin/claude-planline install --lang en --style cute --layout two-line
+```
+
+It creates:
+
+```text
+~/.claude/claude-planline-wrapper.sh
+```
+
+and updates:
+
+```text
+~/.claude/settings.json
+```
+
+with a timestamped backup first.
+
+Inline instead of two lines:
+
+```bash
+./bin/claude-planline install --lang en --style cute --layout inline
+```
+
+### Replace the existing statusLine
+
+```bash
+./bin/claude-planline install --lang en --style cute --no-preserve-existing
+```
+
+### Dry run
+
+Show what would be written without changing files:
+
+```bash
+./bin/claude-planline install --lang en --style cute --layout two-line --dry-run
+```
+
+### Uninstall
+
+```bash
+./bin/claude-planline uninstall
+```
+
+`uninstall` removes the `statusLine` block from settings and writes a backup. If you had an old statusLine, restore it from the backup printed by the installer.
+
+## Manual Claude Code Config
+
+You can also edit `~/.claude/settings.json` manually:
 
 ```json
 {
@@ -52,54 +135,28 @@ Then use the absolute path in Claude Code:
 }
 ```
 
-### Option B: install as a Python package
+## Optional Python Package Install
 
-From this folder:
+From a cloned repo:
 
 ```bash
 python3 -m pip install .
 ```
 
-Then install it into Claude Code settings:
+Then:
 
 ```bash
-claude-planline install --lang es --style cute
+claude-planline install --lang en --style cute --layout two-line
 ```
 
-This writes a `statusLine` block to:
-
-```text
-~/.claude/settings.json
-```
-
-If that file already exists, `claude-planline` creates a timestamped backup first.
-
-Dry run:
+Or directly from GitHub:
 
 ```bash
-claude-planline install --lang es --style cute --dry-run
+python3 -m pip install "git+https://github.com/Arqueoartis/claude-planline.git"
+claude-planline install --lang en --style cute --layout two-line
 ```
 
-Uninstall:
-
-```bash
-claude-planline uninstall
-```
-
-## Manual Claude Code config
-
-You can also edit `~/.claude/settings.json` manually:
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "claude-planline --lang es --style cute",
-    "refreshInterval": 60,
-    "padding": 1
-  }
-}
-```
+If `pip` is not available or has build issues, use the cloned repo method above. It needs only Python 3 and no third-party dependencies.
 
 ## Preview
 
@@ -180,6 +237,12 @@ English:
 
 ```bash
 claude-planline --lang en
+```
+
+English preview:
+
+```bash
+./bin/claude-planline preview --lang en --style cute
 ```
 
 Disable colors:

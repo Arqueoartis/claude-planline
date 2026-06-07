@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "claude-planline"
-version = "0.1.0"
+version = "0.2.0"
 description = "Tiny cute Claude Code statusLine helper for 5h plan usage and monthly usage credits."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -28,4 +28,3 @@ claude-planline = "claude_planline.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
