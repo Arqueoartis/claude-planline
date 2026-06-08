@@ -132,10 +132,14 @@ def extract_window(payload: dict[str, Any]) -> WindowUsage:
     for candidate in candidates:
         if not candidate:
             continue
-        percent = first_number(candidate, ["used_percentage", "usedPercent", "percentage", "percent", "used"])
+        percent = first_percent(
+            candidate,
+            ["used_percentage", "usedPercent", "used_percent", "percentage", "percent"],
+            ["used_fraction", "usedFraction", "fraction", "ratio"],
+        )
         reset = first_value(candidate, ["resets_at", "resetsAt", "reset_at", "resetAt", "reset", "resets"])
         if percent is not None or reset is not None:
-            return WindowUsage(used_percent=normalize_percent(percent), resets_at=reset)
+            return WindowUsage(used_percent=percent, resets_at=reset)
 
     return WindowUsage()
 
@@ -151,9 +155,10 @@ def extract_credits(payload: dict[str, Any]) -> CreditUsage:
             continue
 
         spent, limit, currency = extract_money_pair(candidate)
-        percent = first_number(
+        percent = first_percent(
             candidate,
-            ["used_percentage", "usedPercent", "percentage", "percent", "used_percent", "usedPercent"],
+            ["used_percentage", "usedPercent", "used_percent", "percentage", "percent"],
+            ["used_fraction", "usedFraction", "fraction", "ratio"],
         )
         if percent is None and spent is not None and limit:
             percent = (spent / limit) * 100
@@ -163,7 +168,7 @@ def extract_credits(payload: dict[str, Any]) -> CreditUsage:
 
         if percent is not None or spent is not None or limit is not None:
             return CreditUsage(
-                used_percent=normalize_percent(percent),
+                used_percent=percent,
                 spent=spent,
                 limit=limit,
                 currency=currency,
@@ -369,6 +374,19 @@ def first_number(data: dict[str, Any], keys: list[str]) -> float | None:
     return None
 
 
+def first_percent(data: dict[str, Any], percent_keys: list[str], fraction_keys: list[str]) -> float | None:
+    percent = first_number(data, percent_keys)
+    if percent is not None:
+        return percent
+
+    fraction = first_number(data, fraction_keys)
+    if fraction is None:
+        return None
+    if 0 <= fraction <= 1:
+        return fraction * 100
+    return fraction
+
+
 def first_string(data: dict[str, Any], keys: list[str]) -> str | None:
     for key in keys:
         value = data.get(key)
@@ -396,14 +414,6 @@ def parse_float(value: Any) -> float | None:
         if match:
             return float(match.group(0))
     return None
-
-
-def normalize_percent(value: float | None) -> float | None:
-    if value is None:
-        return None
-    if 0 <= value <= 1:
-        return value * 100
-    return value
 
 
 def clamp(value: float, low: float, high: float) -> float:

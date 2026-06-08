@@ -20,6 +20,34 @@ class RenderTest(unittest.TestCase):
         self.assertIn("42% usado", output)
         self.assertIn("queda 58%", output)
 
+    def test_five_hour_one_percent_is_not_treated_as_fraction(self):
+        payload = {
+            "rate_limits": {
+                "five_hour": {
+                    "used_percentage": 1,
+                    "resets_at": "2:10am (Europe/Madrid)",
+                }
+            }
+        }
+
+        output = render(payload, lang="es", style="cute", color=False)
+
+        self.assertIn("1% usado", output)
+        self.assertIn("queda 99%", output)
+
+    def test_five_hour_explicit_fraction_field(self):
+        payload = {
+            "rate_limits": {
+                "five_hour": {
+                    "used_fraction": 0.42,
+                }
+            }
+        }
+
+        output = render(payload, lang="es", style="cute", color=False)
+
+        self.assertIn("42% usado", output)
+
     def test_usage_credits_structured(self):
         payload = {
             "usage_credits": {
@@ -56,4 +84,3 @@ class RenderTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
